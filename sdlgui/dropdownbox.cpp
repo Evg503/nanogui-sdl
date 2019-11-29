@@ -296,18 +296,21 @@ void DropdownBox::performLayout(SDL_Renderer *renderer)
   }
 }
 
-void DropdownBox::setSelectedIndex(int idx) {
+void DropdownBox::setSelectedIndex(int idx)
+{
     if (mItemsShort.empty())
         return;
+
     const std::vector<Widget *> &children = popup().children();
-    ((Button *) children[mSelectedIndex])->setPushed(false);
-    ((Button *) children[idx])->setPushed(true);
+    ((Button *) children[mSelectedIndex + 1])->setPushed(false);
+    ((Button *) children[idx + 1])->setPushed(true);
     mSelectedIndex = idx;
     setCaption(mItemsShort[idx]);
     ((DropdownPopup*)mPopup)->updateCaption(mItemsShort[idx]);
 }
 
-void DropdownBox::setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort) {
+void DropdownBox::setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort)
+{
     assert(items.size() == itemsShort.size());
     mItems = items;
     mItemsShort = itemsShort;
@@ -330,8 +333,7 @@ void DropdownBox::setItems(const std::vector<std::string> &items, const std::vec
         DropdownListItem *button = new DropdownListItem(mPopup, str);
         button->setFlags(Button::RadioButton);
         button->setCallback([&, index] {
-            mSelectedIndex = index;
-            setCaption(mItemsShort[index]);
+            setSelectedIndex(index);
             setPushed(false);
             if (mCallback)
                 mCallback(index);
@@ -384,7 +386,7 @@ void DropdownBox::draw(SDL_Renderer* renderer)
   
   Button::draw(renderer);
 
-  if (mChevronIcon) 
+  if (mChevronIcon)
   {
     auto icon = utf8(mChevronIcon);
     Color textColor = mTextColor.a() == 0 ? mTheme->mTextColor : mTextColor;
